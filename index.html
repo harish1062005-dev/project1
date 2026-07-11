@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Loom Kali Entry</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --bg-light: #f3f4f6;
+            --bg-dark: #1f2937;
+            --card-light: #ffffff;
+            --card-dark: #374151;
+            --text-light: #1f2937;
+            --text-dark: #f9fafb;
+            --border-light: #e5e7eb;
+            --border-dark: #4b5563;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        body.dark {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card h1 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-success {
+            background: #10b981;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Dashboard */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .dark .header {
+            background: var(--card-dark);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #6b7280;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .dark .nav-link {
+            color: #9ca3af;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .dark .stat-card {
+            background: var(--card-dark);
+        }
+
+        .stat-card h3 {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .dark .stat-card h3 {
+            color: #9ca3af;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .dark .stat-card .value {
+            color: white;
+        }
+
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .dark .table-container {
+            background: var(--card-dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .dark th, .dark td {
+            border-color: var(--border-dark);
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .dark th {
+            background: #4b5563;
+            color: #9ca3af;
+        }
+
+        .dark td {
+            color: var(--text-dark);
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .dark tr:hover {
+            background: #4b5563;
+        }
+
+        /* Forms */
+        .form-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .dark .form-card {
+            background: var(--card-dark);
+        }
+
+        .form-card h2 {
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+
+        .dark .form-card h2 {
+            color: white;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        /* Status badges */
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-paid {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-unpaid {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Dark mode toggle */
+        .dark-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            color: #6b7280;
+        }
+
+        .dark-toggle:hover {
+            background: #f3f4f6;
+        }
+
+        .dark .dark-toggle {
+            color: #9ca3af;
+        }
+
+        .dark .dark-toggle:hover {
+            background: #4b5563;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .dark .modal-content {
+            background: var(--card-dark);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            background: #e5e7eb;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .dark .tabs {
+            background: #4b5563;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 6px;
+            color: #6b7280;
+        }
+
+        .dark .tab {
+            color: #9ca3af;
+        }
+
+        .tab.active {
+            background: white;
+            color: #1f2937;
+        }
+
+        .dark .tab.active {
+            background: var(--card-dark);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <h1>Power Loom Kali Entry</h1>
+            <p>Sign in to your account</p>
+            <div id="loginError" class="error hidden"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <div class="container">
+            <header class="header">
+                <h1 style="color: #3b82f6;">Kali Entry</h1>
+                <nav class="nav-links" id="navLinks"></nav>
+                <div class="user-info">
+                    <button class="dark-toggle" onclick="toggleDarkMode()">🌙</button>
+                    <div class="user-avatar" id="userAvatar">O</div>
+                    <div>
+                        <div id="userName" style="font-weight: 600;">Owner</div>
+                        <div id="userRole" style="font-size: 12px; color: #6b7280;">Owner</div>
+                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="resetAllData()" id="resetBtn" style="margin-right: 8px;">Reset</button>
+                    <button class="btn btn-sm btn-secondary" onclick="logout()">Logout</button>
+                </div>
+            </header>
+
+            <div id="content"></div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Modal Title</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize data
+        let currentUser = null;
+        let darkMode = localStorage.getItem('darkMode') === 'true';
+
+        // Initialize default data
+        function initializeData() {
+            if (!localStorage.getItem('users')) {
+                const defaultUsers = [
+                    { id: 1, name: 'Sekar', username: 'Sekar', password: 'Sekar123', role: 'owner', mobile: '0000000000' }
+                ];
+                localStorage.setItem('users', JSON.stringify(defaultUsers));
+            }
+            if (!localStorage.getItem('workers')) {
+                localStorage.setItem('workers', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('kaliEntries')) {
+                localStorage.setItem('kaliEntries', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('payments')) {
+                localStorage.setItem('payments', JSON.stringify([]));
+            }
+        }
+
+        // Reset all data
+        function resetAllData() {
+            if (confirm('This will delete all data including workers, entries, and payments. Are you sure?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                initializeData();
+                alert('All data has been reset. Please login with your credentials.');
+                location.reload();
+            }
+        }
+
+        // Helper functions
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users') || '[]');
+        }
+
+        function getWorkers() {
+            return JSON.parse(localStorage.getItem('workers') || '[]');
+        }
+
+        function getKaliEntries() {
+            return JSON.parse(localStorage.getItem('kaliEntries') || '[]');
+        }
+
+        function getPayments() {
+            return JSON.parse(localStorage.getItem('payments') || '[]');
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function saveWorkers(workers) {
+            localStorage.setItem('workers', JSON.stringify(workers));
+        }
+
+        function saveKaliEntries(entries) {
+            localStorage.setItem('kaliEntries', JSON.stringify(entries));
+        }
+
+        function savePayments(payments) {
+            localStorage.setItem('payments', JSON.stringify(payments));
+        }
+
+        // Auth functions
+        function login(username, password) {
+            try {
+                const users = getUsers();
+                const user = users.find(u => u.username === username && u.password === password);
+                if (user) {
+                    currentUser = user;
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                console.error('Login error:', e);
+                return false;
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            sessionStorage.removeItem('currentUser');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        // Dark mode
+        function toggleDarkMode() {
+            darkMode = !darkMode;
+            localStorage.setItem('darkMode', darkMode);
+            document.body.classList.toggle('dark', darkMode);
+        }
+
+        // Initialize
+        initializeData();
+        document.body.classList.toggle('dark', darkMode);
+
+        // Auto logout on page close
+        window.addEventListener('beforeunload', function() {
+            if (currentUser) {
+                localStorage.removeItem('currentUser');
+                sessionStorage.removeItem('currentUser');
+            }
+        });
+
+        // Check for existing session (sessionStorage only for current session)
+        let savedUser = sessionStorage.getItem('currentUser');
+        if (savedUser) {
+            try {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            } catch (e) {
+                console.error('Error parsing saved user:', e);
+            }
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (login(username, password)) {
+                document.getElementById('loginError').classList.add('hidden');
+                showMainApp();
+            } else {
+                document.getElementById('loginError').textContent = 'Invalid username or password';
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        });
+
+        function showMainApp() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role === 'owner' ? 'Owner' : 'Worker';
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            
+            // Show reset button only for owner
+            document.getElementById('resetBtn').style.display = currentUser.role === 'owner' ? 'inline-block' : 'none';
+            
+            setupNavigation();
+            
+            if (currentUser.role === 'owner') {
+                showDashboard();
+            } else {
+                showWorkerDashboard();
+            }
+        }
+
+        function setupNavigation() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.innerHTML = '';
+            
+            if (currentUser.role === 'owner') {
+                const links = [
+                    { name: 'Dashboard', action: showDashboard },
+                    { name: 'Kali Entry', action: showKaliEntry },
+                    { name: 'Workers', action: showWorkers },
+                    { name: 'Reports', action: showReports },
+                    { name: 'Payments', action: showPayments }
+                ];
+                links.forEach(link => {
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.className = 'nav-link';
+                    a.textContent = link.name;
+                    a.onclick = (e) => {
+                        e.preventDefault();
+                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        a.classList.add('active');
+                        link.action();
+                    };
+                    navLinks.appendChild(a);
+                });
+            } else {
+                const links = [
+                    { name: 'My Dashboard', action: showWorkerDashboard },
+                    { name: 'My Records', action: showWorkerRecords },
+                    { name: 'My Payments', action: showWorkerPayments }
+                ];
+                links.forEach(link => {
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.className = 'nav-link';
+                    a.textContent = link.name;
+                    a.onclick = (e) => {
+                        e.preventDefault();
+                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        a.classList.add('active');
+                        link.action();
+                    };
+                    navLinks.appendChild(a);
+                });
+            }
+        }
+
+        // Dashboard (Owner)
+        function showDashboard() {
+            const workers = getWorkers();
+            const entries = getKaliEntries();
+            const payments = getPayments();
+            
+            const today = new Date().toISOString().split('T')[0];
+            const weekStart = new Date();
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            const weekStartDate = weekStart.toISOString().split('T')[0];
+            
+            const todayEntries = entries.filter(e => e.date === today);
+            const weekEntries = entries.filter(e => e.date >= weekStartDate);
+            
+            const todayKali = todayEntries.reduce((sum, e) => sum + parseFloat(e.kali), 0);
+            const weekKali = weekEntries.reduce((sum, e) => sum + parseFloat(e.kali), 0);
+            const todayAmount = todayEntries.reduce((sum, e) => sum + parseFloat(e.totalAmount), 0);
+            const weekAmount = weekEntries.reduce((sum, e) => sum + parseFloat(e.totalAmount), 0);
+            
+            const paidAmount = payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + parseFloat(p.totalAmount), 0);
+            const unpaidAmount = payments.filter(p => p.status === 'unpaid').reduce((sum, p) => sum + parseFloat(p.totalAmount), 0);
+            
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h2 style="margin-bottom: 20px;">Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Workers</h3>
+                        <div class="value">${workers.length}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Today's Kali</h3>
+                        <div class="value">${todayKali.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Today's Amount</h3>
+                        <div class="value">₹${todayAmount.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>This Week's Kali</h3>
+                        <div class="value">${weekKali.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>This Week's Amount</h3>
+                        <div class="value">₹${weekAmount.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Paid Amount</h3>
+                        <div class="value">₹${paidAmount.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending Amount</h3>
+                        <div class="value">₹${unpaidAmount.toFixed(2)}</div>
+                    </div>
+                </div>
+                
+                <div class="form-card">
+                    <h2>Quick Actions</h2>
+                    <div class="form-row">
+                        <button class="btn" onclick="showKaliEntry()">Add Kali Entry</button>
+                        <button class="btn btn-secondary" onclick="showWorkers()">Manage Workers</button>
+                        <button class="btn btn-success" onclick="showReports()">View Reports</button>
+                        <button class="btn btn-danger" onclick="showPayments()">Manage Payments</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Kali Entry
+        function showKaliEntry() {
+            const workers = getWorkers();
+            const entries = getKaliEntries();
+            
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h2 style="margin-bottom: 20px;">Daily Kali Entry</h2>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr;">
+                    <div class="form-card">
+                        <h3>New Entry</h3>
+                        <form id="kaliEntryForm">
+                            <div class="form-group">
+                                <label>Worker</label>
+                                <select id="entryWorker" required>
+                                    <option value="">Select Worker</option>
+                                    ${workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" id="entryDate" value="${new Date().toISOString().split('T')[0]}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Loom Name</label>
+                                <input type="text" id="entryLoom" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Kali</label>
+                                    <input type="number" step="0.01" id="entryKali" required oninput="calculateTotal()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Rate Per Kali</label>
+                                    <input type="number" step="0.01" id="entryRate" required oninput="calculateTotal()">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Total Amount</label>
+                                <input type="text" id="entryTotal" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Remarks (Optional)</label>
+                                <textarea id="entryRemarks" rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn">Save Entry</button>
+                        </form>
+                    </div>
+                    
+                    <div class="form-card">
+                        <h3>Recent Entries</h3>
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            ${entries.slice(-10).reverse().map(e => {
+                                const worker = workers.find(w => w.id == e.workerId);
+                                return `
+                                    <div style="padding: 12px; border-bottom: 1px solid #e5e7eb;">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <strong>${worker ? worker.name : 'Unknown'}</strong>
+                                            <span style="color: #10b981;">₹${parseFloat(e.totalAmount).toFixed(2)}</span>
+                                        </div>
+                                        <div style="font-size: 12px; color: #6b7280;">
+                                            ${e.loomName} - ${e.date}
+                                        </div>
+                                        <div style="font-size: 12px; color: #6b7280;">
+                                            ${e.kali} @ ₹${e.ratePerKali}
+                                        </div>
+                                        <button onclick="deleteEntry(${e.id})" style="margin-top: 8px; padding: 4px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('kaliEntryForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const newEntry = {
+                    id: Date.now(),
+                    workerId: document.getElementById('entryWorker').value,
+                    date: document.getElementById('entryDate').value,
+                    loomName: document.getElementById('entryLoom').value,
+                    kali: document.getElementById('entryKali').value,
+                    ratePerKali: document.getElementById('entryRate').value,
+                    totalAmount: document.getElementById('entryTotal').value,
+                    remarks: document.getElementById('entryRemarks').value
+                };
+                
+                const entries = getKaliEntries();
+                entries.push(newEntry);
+                saveKaliEntries(entries);
+                
+                alert('Entry saved successfully!');
+                showKaliEntry();
+            });
+        }
+
+        function calculateTotal() {
+            const kali = parseFloat(document.getElementById('entryKali').value) || 0;
+            const rate = parseFloat(document.getElementById('entryRate').value) || 0;
+            document.getElementById('entryTotal').value = (kali * rate).toFixed(2);
+        }
+
+        function deleteEntry(id) {
+            if (confirm('Are you sure you want to delete this entry?')) {
+                const entries = getKaliEntries().filter(e => e.id !== id);
+                saveKaliEntries(entries);
+                showKaliEntry();
+            }
+        }
+
+        // Workers Management
+        function showWorkers() {
+            const workers = getWorkers();
+            
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Workers Management</h2>
+                    <button class="btn btn-sm" onclick="showAddWorkerModal()">Add Worker</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Mobile</th>
+                                <th>Username</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${workers.map(w => `
+                                <tr>
+                                    <td>${w.name}</td>
+                                    <td>${w.mobile}</td>
+                                    <td>${w.username}</td>
+                                    <td>
+                                        <button onclick="editWorker(${w.id})" style="padding: 4px 8px; margin-right: 4px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;">Edit</button>
+                                        <button onclick="deleteWorker(${w.id})" style="padding: 4px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function showAddWorkerModal(worker = null) {
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalTitle.textContent = worker ? 'Edit Worker' : 'Add Worker';
+            modalBody.innerHTML = `
+                <form id="workerForm">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="workerName" value="${worker ? worker.name : ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="text" id="workerMobile" value="${worker ? worker.mobile : ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="workerUsername" value="${worker ? worker.username : ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password ${worker ? '(leave blank to keep current)' : ''}</label>
+                        <input type="password" id="workerPassword" ${!worker ? 'required' : ''}>
+                    </div>
+                    <button type="submit" class="btn">${worker ? 'Update' : 'Add'}</button>
+                </form>
+            `;
+            
+            document.getElementById('modal').classList.add('active');
+            
+            document.getElementById('workerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const workers = getWorkers();
+                
+                if (worker) {
+                    const index = workers.findIndex(w => w.id === worker.id);
+                    workers[index] = {
+                        ...workers[index],
+                        name: document.getElementById('workerName').value,
+                        mobile: document.getElementById('workerMobile').value,
+                        username: document.getElementById('workerUsername').value,
+                        password: document.getElementById('workerPassword').value || worker.password
+                    };
+                } else {
+                    const newWorker = {
+                        id: Date.now(),
+                        name: document.getElementById('workerName').value,
+                        mobile: document.getElementById('workerMobile').value,
+                        username: document.getElementById('workerUsername').value,
+                        password: document.getElementById('workerPassword').value,
+                        role: 'worker'
+                    };
+                    workers.push(newWorker);
+                    
+                    // Also add to users for login
+                    const users = getUsers();
+                    users.push(newWorker);
+                    saveUsers(users);
+                }
+                
+                saveWorkers(workers);
+                closeModal();
+                showWorkers();
+            });
+        }
+
+        function editWorker(id) {
+            const worker = getWorkers().find(w => w.id === id);
+            showAddWorkerModal(worker);
+        }
+
+        function deleteWorker(id) {
+            if (confirm('Are you sure you want to delete this worker?')) {
+                const workers = getWorkers().filter(w => w.id !== id);
+                saveWorkers(workers);
+                
+                // Also remove from users
+                const users = getUsers().filter(u => u.id !== id);
+                saveUsers(users);
+                
+                showWorkers();
+            }
+        }
+
+        // Reports
+        function showReports() {
+            const workers = getWorkers();
+            const entries = getKaliEntries();
+            const payments = getPayments();
+            
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h2 style="margin-bottom: 20px;">Reports</h2>
+                <div class="tabs">
+                    <button class="tab active" onclick="showReportTab('daily')">Daily</button>
+                    <button class="tab" onclick="showReportTab('weekly')">Weekly</button>
+                    <button class="tab" onclick="showReportTab('monthly')">Monthly</button>
+                </div>
+                
+                <div class="form-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Worker</label>
+                            <select id="reportWorker" onchange="generateReport()">
+                                <option value="">All Workers</option>
+                                ${workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" id="reportDate" value="${new Date().toISOString().split('T')[0]}" onchange="generateReport()">
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                        <button class="btn btn-sm btn-success" onclick="exportPDF()">Export PDF</button>
+                        <button class="btn btn-sm btn-secondary" onclick="exportExcel()">Export Excel</button>
+                    </div>
+                    
+                    <div id="reportTable"></div>
+                </div>
+            `;
+            
+            generateReport();
+        }
+
+        let currentReportType = 'daily';
+        
+        function showReportTab(type) {
+            currentReportType = type;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            generateReport();
+        }
+
+        function generateReport() {
+            const workerId = document.getElementById('reportWorker').value;
+            const date = document.getElementById('reportDate').value;
+            const workers = getWorkers();
+            const entries = getKaliEntries();
+            const payments = getPayments();
+            
+            let reportData = [];
+            let tableHTML = '';
+            
+            if (currentReportType === 'daily') {
+                const filteredEntries = entries.filter(e => {
+                    const matchWorker = !workerId || e.workerId == workerId;
+                    const matchDate = e.date === date;
+                    return matchWorker && matchDate;
+                });
+                
+                tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Worker</th>
+                                <th>Loom</th>
+                                <th>Kali</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredEntries.map(e => {
+                                const worker = workers.find(w => w.id == e.workerId);
+                                return `
+                                    <tr>
+                                        <td>${e.date}</td>
+                                        <td>${worker ? worker.name : 'Unknown'}</td>
+                                        <td>${e.loomName}</td>
+                                        <td>${e.kali}</td>
+                                        <td>₹${e.ratePerKali}</td>
+                                        <td>₹${parseFloat(e.totalAmount).toFixed(2)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                reportData = filteredEntries.map(e => ({
+                    date: e.date,
+                    worker: workers.find(w => w.id == e.workerId)?.name || 'Unknown',
+                    loom: e.loomName,
+                    kali: e.kali,
+                    rate: e.ratePerKali,
+                    amount: e.totalAmount
+                }));
+            } else if (currentReportType === 'weekly') {
+                // Weekly report logic
+                const weekStart = new Date(date);
+                weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+                const weekStartDate = weekStart.toISOString().split('T')[0];
+                const weekEndDate = new Date(weekStart);
+                weekEndDate.setDate(weekEndDate.getDate() + 6);
+                const weekEndDateStr = weekEndDate.toISOString().split('T')[0];
+                
+                const workerIds = workerId ? [workerId] : workers.map(w => w.id);
+                
+                workerIds.forEach(wid => {
+                    const workerEntries = entries.filter(e => 
+                        e.workerId == wid && e.date >= weekStartDate && e.date <= weekEndDateStr
+                    );
+                    
+                    if (workerEntries.length > 0) {
+                        const worker = workers.find(w => w.id == wid);
+                        const totalKali = workerEntries.reduce((sum, e) => sum + parseFloat(e.kali), 0);
+                        const totalAmount = workerEntries.reduce((sum, e) => sum + parseFloat(e.totalAmount), 0);
+                        const avgRate = totalAmount / totalKali;
+                        
+                        const payment = payments.find(p => 
+                            p.workerId == wid && p.weekStart === weekStartDate && p.weekEnd === weekEndDateStr
+                        );
+                        
+                        reportData.push({
+                            worker: worker?.name || 'Unknown',
+                            totalKali,
+                            avgRate: avgRate.toFixed(2),
+                            totalAmount,
+                            status: payment?.status || 'Unpaid'
+                        });
+                    }
+                });
+                
+                tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Worker</th>
+                                <th>Total Kali</th>
+                                <th>Avg Rate</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.map(r => `
+                                <tr>
+                                    <td>${r.worker}</td>
+                                    <td>${r.totalKali.toFixed(2)}</td>
+                                    <td>₹${r.avgRate}</td>
+                                    <td>₹${r.totalAmount.toFixed(2)}</td>
+                                    <td><span class="badge ${r.status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">${r.status}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (currentReportType === 'monthly') {
+                const month = new Date(date).getMonth();
+                const year = new Date(date).getFullYear();
+                
+                const workerIds = workerId ? [workerId] : workers.map(w => w.id);
+                
+                workerIds.forEach(wid => {
+                    const workerEntries = entries.filter(e => {
+                        const entryDate = new Date(e.date);
+                        return e.workerId == wid && entryDate.getMonth() === month && entryDate.getFullYear() === year;
+                    });
+                    
+                    if (workerEntries.length > 0) {
+                        const worker = workers.find(w => w.id == wid);
+                        const totalKali = workerEntries.reduce((sum, e) => sum + parseFloat(e.kali), 0);
+                        const totalAmount = workerEntries.reduce((sum, e) => sum + parseFloat(e.totalAmount), 0);
+                        const avgRate = totalAmount / totalKali;
+                        
+                        reportData.push({
+                            worker: worker?.name || 'Unknown',
+                            totalKali,
+                            avgRate: avgRate.toFixed(2),
+                            totalAmount,
+                            totalEntries: workerEntries.length
+                        });
+                    }
+                });
+                
+                tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Worker</th>
+                                <th>Total Kali</th>
+                                <th>Avg Rate</th>
+                                <th>Total Amount</th>
+                                <th>Total Entries</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.map(r => `
+                                <tr>
+                                    <td>${r.worker}</td>
+                                    <td>${r.totalKali.toFixed(2)}</td>
+                                    <td>₹${r.avgRate}</td>
+                                    <td>₹${r.totalAmount.toFixed(2)}</td>
+                                    <td>${r.totalEntries}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+            
+            document.getElementById('reportTable').innerHTML = tableHTML || '<p style="text-align: center; color: #6b7280;">No data found</p>';
+            window.currentReportData = reportData;
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text(`${currentReportType.charAt(0).toUpperCase() + currentReportType.slice(1)} Report`, 14, 22);
+            
+            const data = window.currentReportData || [];
+            if (data.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            const headers = Object.keys(data[0]);
+            const rows = data.map(row => headers.map(h => row[h]));
+            
+            doc.autoTable({
+                head: [headers],
+                body: rows,
+                startY: 30
+            });
+            
+            doc.save(`${currentReportType}-report.pdf`);
+        }
+
+        function exportExcel() {
+            const data = window.currentReportData || [];
+            if (data.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Report');
+            XLSX.writeFile(wb, `${currentReportType}-report.xlsx`);
+        }
+
+        // Payments
+        function showPayments() {
+            const workers = getWorkers();
+            const payments = getPayments();
+            
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Payment Management</h2>
+                    <button class="btn btn-sm" onclick="generateWeeklyPayments()">Generate Weekly Payments</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Worker</th>
+                                <th>Week</th>
+                                <th>Total Kali</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${payments.map(p => {
+                                const worker = workers.find(w => w.id == p.workerId);
+                                return `
+                                    <tr>
+                                        <td>${worker ? worker.name : 'Unknown'}</td>
+                                        <td>${p.weekStart} to ${p.weekEnd}</td>
+                                        <td>${p.totalKali}</td>
+                                        <td>₹${parseFloat(p.totalAmount).toFixed(2)}</td>
+                                        <td><span class="badge ${p.status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">${p.status}</span></td>
+                                        <td>
+                                            ${p.status === 'unpaid' ? 
+                                                `<button onclick="markPaid(${p.id})" style="padding: 4px 8px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer;">Mark Paid</button>` :
+                                                `<button onclick="markUnpaid(${p.id})" style="padding: 4px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">Mark Unpaid</button>`
+                                            }
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function generateWeeklyPayments() {
+            const weekStart = prompt('Enter week start date (YYYY-MM-DD):');
+            if (!weekStart) return;
+            
+            const weekEnd = prompt('Enter week end date (YYYY-MM-DD):');
+            if (!weekEnd) return;
+            
+            const workers = getWorkers();
+            const entries = getKaliEntries();
+            const payments = getPayments();
+            
+            workers.forEach(worker => {
+                const workerEntries = entries.filter(e => 
+                    e.workerId == worker.id && e.date >= weekStart && e.date <= weekEnd
+                );
+                
+                if (workerEntries.length > 0) {
+                    const totalKali = workerEntries.reduce((sum, e) => sum + parseFloat(e.kali), 0);
+                    const totalAmount = workerEntries.reduce((sum, e) => sum + parseFloat(e.totalAmount), 0);
+                    
+                    const existing = payments.find(p => 
+                        p.workerId == worker.id && p.weekStart === weekStart && p.weekEnd === weekEnd
+                    );
+                    
+                    if (!existing) {
+                        payments.push({
+                            id: Date.now() + worker.id,
+                            workerId: worker.id,
+                            weekStart,
+                            weekEnd,
+                            totalKali,
+                            totalAmount,
+                            status: 'unpaid',
+                            paymentDate: null
+                        });
+                    }
+                }
+            });
+            
+            savePayments(payments);
+            alert('Weekly payments generated!');
+            showPayments();
+        }
+
+        function markPaid(id) {
+            const paymentDate = prompt('Enter payment date (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
+            if (!paymentDate) return;
+            
+            const payments = getPayments();
+            const index = payments.findIndex(p => p.id === id);
+            payments[index].status = 'paid';
+            payments[index].paymentDate = paymentDate;
+            savePayments(payments);
+            showPayments();
+        }
+
+        function markUnpaid(id) {
+            if (!confirm('Are you sure you want to mark this as unpaid?')) return;
+            
+            const payments = getPayments();
+            const index = payments.findIndex(p => p.id === id);
+            payments[index].status = 'unpaid';
+            payments[index].paymentDate = null;
+            savePayments(payments);
+            showPayments();
+        }
+
+        // Worker Dashboard
+        function showWorkerDashboard() {
+            const entries = getKaliEntries();
+            const payments = getPayments();
+            
+            const today = new Date().toISOString().split('T')[0];
+            const weekStart = new Date();
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            const weekStartDate = weekStart.toISOString().split('T')[0];
+            
+            const myEntries = entries.filter(e => e.workerId == currentUser.id);
+            const todayEntries = myEntries.filter(e => e.date === today);
+            const weekEntries = myEntries.filter(e => e.date >= weekStartDate);
+            
+            const todayKali = todayEntries.reduce((sum, e) => sum + parseFloat(e.kali), 0);
+            const weekKali = weekEntries.reduce((sum, e) => sum + parseFloat(e.kali), 0);
+            const todayAmount = todayEntries.reduce((sum, e) => sum + parseFloat(e.totalAmount), 0);
+            const weekAmount = weekEntries.reduce((sum, e) => sum + parseFloat(e.totalAmount), 0);
+            
+            const myPayments = payments.filter(p => p.workerId == currentUser.id);
+            const currentWeekPayment = myPayments.find(p => p.weekStart === weekStartDate);
+            
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h2 style="margin-bottom: 20px;">My Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Today's Kali</h3>
+                        <div class="value">${todayKali.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Today's Amount</h3>
+                        <div class="value">₹${todayAmount.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>This Week's Kali</h3>
+                        <div class="value">${weekKali.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>This Week's Amount</h3>
+                        <div class="value">₹${weekAmount.toFixed(2)}</div>
+                    </div>
+                </div>
+                
+                ${currentWeekPayment ? `
+                    <div class="form-card">
+                        <h3>Current Week Payment Status</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <p>Week: ${currentWeekPayment.weekStart} to ${currentWeekPayment.weekEnd}</p>
+                                <p style="font-size: 24px; font-weight: bold;">₹${parseFloat(currentWeekPayment.totalAmount).toFixed(2)}</p>
+                            </div>
+                            <span class="badge ${currentWeekPayment.status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">
+                                ${currentWeekPayment.status === 'paid' ? `Paid on ${currentWeekPayment.paymentDate}` : 'Unpaid'}
+                            </span>
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="form-card">
+                    <h3>Recent Payment History</h3>
+                    ${myPayments.slice(0, 5).map(p => `
+                        <div style="padding: 12px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between;">
+                            <div>
+                                <p>${p.weekStart} to ${p.weekEnd}</p>
+                                <p style="font-size: 12px; color: #6b7280;">${p.totalKali} Kali</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="font-weight: bold;">₹${parseFloat(p.totalAmount).toFixed(2)}</p>
+                                <span class="badge ${p.status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">${p.status}</span>
+                            </div>
+                        </div>
+                    `).join('') || '<p style="text-align: center; color: #6b7280;">No payment history</p>'}
+                </div>
+            `;
+        }
+
+        // Worker Records
+        function showWorkerRecords() {
+            const entries = getKaliEntries().filter(e => e.workerId == currentUser.id);
+            
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h2 style="margin-bottom: 20px;">My Records</h2>
+                <div class="form-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="filterStartDate" onchange="filterWorkerRecords()">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" id="filterEndDate" onchange="filterWorkerRecords()">
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Loom Name</th>
+                                <th>Kali</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workerRecordsBody">
+                            ${entries.map(e => `
+                                <tr>
+                                    <td>${e.date}</td>
+                                    <td>${e.loomName}</td>
+                                    <td>${e.kali}</td>
+                                    <td>₹${e.ratePerKali}</td>
+                                    <td>₹${parseFloat(e.totalAmount).toFixed(2)}</td>
+                                    <td>${e.remarks || '-'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            window.allWorkerEntries = entries;
+        }
+
+        function filterWorkerRecords() {
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            
+            let filtered = window.allWorkerEntries;
+            
+            if (startDate) {
+                filtered = filtered.filter(e => e.date >= startDate);
+            }
+            if (endDate) {
+                filtered = filtered.filter(e => e.date <= endDate);
+            }
+            
+            document.getElementById('workerRecordsBody').innerHTML = filtered.map(e => `
+                <tr>
+                    <td>${e.date}</td>
+                    <td>${e.loomName}</td>
+                    <td>${e.kali}</td>
+                    <td>₹${e.ratePerKali}</td>
+                    <td>₹${parseFloat(e.totalAmount).toFixed(2)}</td>
+                    <td>${e.remarks || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Worker Payments
+        function showWorkerPayments() {
+            const payments = getPayments().filter(p => p.workerId == currentUser.id);
+            
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h2 style="margin-bottom: 20px;">My Payments</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Week</th>
+                                <th>Total Kali</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${payments.map(p => `
+                                <tr>
+                                    <td>${p.weekStart} to ${p.weekEnd}</td>
+                                    <td>${p.totalKali}</td>
+                                    <td>₹${parseFloat(p.totalAmount).toFixed(2)}</td>
+                                    <td><span class="badge ${p.status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">${p.status}</span></td>
+                                    <td>${p.paymentDate || '-'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Modal functions
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Close modal on outside click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
